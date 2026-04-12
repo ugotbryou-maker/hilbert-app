@@ -294,7 +294,7 @@ function PlacementSheet({ placement, onClose, onVersement }) {
             <p style={{ margin: 0, fontFamily: config.fonts.heading, fontSize: 20, color: config.colors.textDark, fontWeight: 700 }}>{formatMontant(placement.valeur)}</p>
           </div>
           <div style={{ flex: 1, background: "#F0FFF4", borderRadius: 12, padding: 14 }}>
-            <p style={{ margin: "0 0 3px", fontSize: 11, color: config.colors.textLight, fontFamily: config.fonts.body }}>Performance</p>
+            <p style={{ margin: "0 0 3px", fontSize: 11, color: config.colors.textLight, fontFamily: config.fonts.body }}>Performance (1 an)</p>
             <p style={{ margin: 0, fontFamily: config.fonts.heading, fontSize: 20, color: config.colors.perfGreen, fontWeight: 700 }}>+{placement.performance}%</p>
           </div>
         </div>
@@ -436,8 +436,8 @@ export default function Portefeuille() {
 
       {/* Donut */}
       <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: 16, padding: 14, marginBottom: 20, border: "1px solid rgba(255,255,255,0.08)" }}>
-        <p style={{ margin: "0 0 8px", color: "rgba(255,255,255,0.7)", fontSize: 13, fontFamily: config.fonts.body, fontWeight: 500 }}>Répartition par classe d'actif</p>
-        <ResponsiveContainer width="100%" height={170}>
+        <p style={{ margin: "0 0 0", color: "rgba(255,255,255,0.7)", fontSize: 13, fontFamily: config.fonts.body, fontWeight: 500 }}>Répartition par classe d'actif</p>
+        <ResponsiveContainer width="100%" height={190}>
           <PieChart>
             <Pie data={data.repartition} cx="50%" cy="50%" innerRadius={45} outerRadius={68} paddingAngle={3} dataKey="valeur">
               {data.repartition.map((e, i) => <Cell key={i} fill={e.couleur} />)}

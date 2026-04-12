@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Home, PieChart, FileText, Phone, Newspaper, Bell, Menu, X, LogOut, ChevronRight } from "lucide-react";
 import config from "../config/cabinet.config.js";
@@ -43,10 +43,33 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
 
   const unreadCount = notifications.filter((n) => !n.lu).length;
 
+  // ── Scroll-hide header (mobile only) ──
+  const mainRef = useRef(null);
+  const lastScrollY = useRef(0);
+  const [headerVisible, setHeaderVisible] = useState(true);
+
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const y = el.scrollTop;
+      if (y > lastScrollY.current && y > 50) {
+        setHeaderVisible(false);
+      } else {
+        setHeaderVisible(true);
+      }
+      lastScrollY.current = y;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
   useEffect(() => {
     setBgColor(PAGE_BG[location.pathname] || config.colors.homeBackground);
     setBgGradient(PAGE_GRADIENT[location.pathname] || config.colors.pageGradient);
     setMenuOpen(false);
+    setHeaderVisible(true);
+    lastScrollY.current = 0;
   }, [location.pathname]);
 
   const initials = user ? `${user.prenom?.[0] || ""}${user.nom?.[0] || ""}`.toUpperCase() : "?";
@@ -144,6 +167,10 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: 8,
         zIndex: 50,
+        opacity: headerVisible ? 1 : 0,
+        transform: headerVisible ? "translateY(0)" : "translateY(-100%)",
+        transition: "opacity 0.3s ease, transform 0.3s ease",
+        pointerEvents: headerVisible ? "auto" : "none",
       }}>
         <button onClick={() => setMenuOpen(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex" }}>
           <Menu size={24} color="rgba(255,255,255,0.9)" />
@@ -222,7 +249,7 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
       )}
 
       {/* ═══ CONTENU PRINCIPAL ═══ */}
-      <main className="main-content" style={{
+      <main ref={mainRef} className="main-content" style={{
         flex: 1, height: "100dvh", overflowY: "auto",
         position: "relative", zIndex: 1,
       }}>

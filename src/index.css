@@ -76,6 +76,11 @@ a {
 }
 
 /* ── Animations premium ── */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

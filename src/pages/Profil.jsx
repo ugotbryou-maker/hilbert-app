@@ -1,15 +1,163 @@
 import { useState, useEffect, useRef } from "react";
-import { Camera, Lock, Bell, LogOut, ChevronRight, Check, Shield } from "lucide-react";
+import { Camera, Lock, Bell, LogOut, ChevronRight, Check, Shield, Megaphone, X } from "lucide-react";
 import config from "../config/cabinet.config.js";
 import { useSupabase } from "../hooks/useSupabase.js";
 import { useNavigate } from "react-router-dom";
 
-// Couleurs du profil risque
 const PROFIL_COULEUR = {
   1: { bg: "#E8F5E9", color: "#27AE60", label: "Conservateur" },
   2: { bg: "#FFF3E0", color: "#F39C12", label: "Modéré" },
   3: { bg: "#FCE4EC", color: "#E74C3C", label: "Dynamique" },
 };
+
+// Projets de vie à signaler
+const PROJETS = [
+  { key: "heritage",    emoji: "🏛️", label: "Héritage ou donation" },
+  { key: "immobilier",  emoji: "🏡", label: "Nouveau projet immobilier" },
+  { key: "entreprise",  emoji: "💼", label: "Création ou cession d'entreprise" },
+  { key: "famille",     emoji: "💍", label: "Mariage, PACS ou divorce" },
+  { key: "naissance",   emoji: "👶", label: "Naissance ou adoption" },
+  { key: "retraite",    emoji: "🌅", label: "Départ à la retraite" },
+  { key: "rentree",     emoji: "💰", label: "Rentrée d'argent exceptionnelle" },
+  { key: "autre",       emoji: "✏️", label: "Autre" },
+];
+
+// ── Modale signalement projet ──
+function ProjetModal({ onClose }) {
+  const [step, setStep] = useState(1); // 1=choix, 2=note, 3=confirmation
+  const [selected, setSelected] = useState(null);
+  const [note, setNote] = useState("");
+
+  const handleSubmit = () => {
+    // API V2: supabase.from('demandes').insert({ type: selected.key, note, statut: 'en_attente' })
+    // API V2: envoyer notification push au CGP via Edge Function
+    setStep(3);
+  };
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 400 }} />
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0,
+        background: "#fff", borderRadius: "20px 20px 0 0",
+        zIndex: 401, maxWidth: 600, margin: "0 auto",
+        animation: "slideUp 0.3s cubic-bezier(0.22,1,0.36,1)",
+        maxHeight: "85dvh", display: "flex", flexDirection: "column",
+      }}>
+        {/* Poignée + Header */}
+        <div style={{ padding: "12px 20px 0", flexShrink: 0 }}>
+          <div style={{ width: 40, height: 4, borderRadius: 2, background: "#E0E0E0", margin: "0 auto 16px" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+            <h3 style={{ margin: 0, fontFamily: config.fonts.heading, fontSize: 18, color: config.colors.textDark, fontWeight: 600 }}>
+              {step === 3 ? "Demande envoyée !" : "Signaler un changement"}
+            </h3>
+            <button onClick={onClose} style={{ background: "#F5F5F5", border: "none", borderRadius: "50%", width: 30, height: 30, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <X size={15} color="#888" />
+            </button>
+          </div>
+          {step < 3 && (
+            <p style={{ margin: "0 0 14px", fontSize: 13, color: config.colors.textLight, fontFamily: config.fonts.body }}>
+              Votre conseiller sera notifié pour organiser un point avec vous.
+            </p>
+          )}
+        </div>
+
+        {/* Contenu scrollable */}
+        <div style={{ overflowY: "auto", flex: 1, padding: "0 20px", paddingBottom: "calc(24px + env(safe-area-inset-bottom))" }}>
+
+          {step === 1 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {PROJETS.map(p => (
+                <button
+                  key={p.key}
+                  onClick={() => { setSelected(p); setStep(2); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 14,
+                    padding: "14px 16px", borderRadius: 12,
+                    border: "1.5px solid #EFEFEF",
+                    background: "#FAFAFA",
+                    cursor: "pointer", textAlign: "left", width: "100%",
+                    transition: "border-color 0.15s, background 0.15s",
+                  }}
+                >
+                  <span style={{ fontSize: 22 }}>{p.emoji}</span>
+                  <span style={{ fontSize: 14, fontWeight: 500, color: config.colors.textDark, fontFamily: config.fonts.body }}>
+                    {p.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 2 && selected && (
+            <div>
+              <div style={{
+                display: "flex", alignItems: "center", gap: 12,
+                background: "#F0F7FF", borderRadius: 12, padding: "14px 16px", marginBottom: 18,
+              }}>
+                <span style={{ fontSize: 26 }}>{selected.emoji}</span>
+                <span style={{ fontSize: 15, fontWeight: 600, color: config.colors.gradientStart, fontFamily: config.fonts.body }}>
+                  {selected.label}
+                </span>
+              </div>
+              <p style={{ fontSize: 13, color: config.colors.textLight, fontFamily: config.fonts.body, margin: "0 0 8px" }}>
+                Un message pour votre conseiller (optionnel)
+              </p>
+              <textarea
+                value={note}
+                onChange={e => setNote(e.target.value)}
+                placeholder="Ex. : Je viens d'hériter d'un bien immobilier et souhaite en discuter..."
+                rows={4}
+                style={{
+                  width: "100%", padding: "12px 14px",
+                  borderRadius: 10, border: "1.5px solid #E0E0E0",
+                  fontFamily: config.fonts.body, fontSize: 13,
+                  outline: "none", resize: "none", boxSizing: "border-box",
+                  color: config.colors.textDark,
+                }}
+              />
+              <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+                <button onClick={() => setStep(1)} style={{
+                  flex: 1, padding: "12px", borderRadius: 10,
+                  border: "1.5px solid #E0E0E0", background: "#fff",
+                  color: "#888", fontFamily: config.fonts.body, fontSize: 14, cursor: "pointer",
+                }}>
+                  Retour
+                </button>
+                <button onClick={handleSubmit} style={{
+                  flex: 2, padding: "12px", borderRadius: 10,
+                  border: "none", background: config.colors.pageGradient,
+                  color: "#fff", fontFamily: config.fonts.body, fontSize: 14, fontWeight: 600, cursor: "pointer",
+                }}>
+                  Envoyer la demande
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div style={{ textAlign: "center", padding: "24px 0" }}>
+              <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
+              <h4 style={{ fontFamily: config.fonts.heading, fontSize: 17, color: config.colors.textDark, margin: "0 0 10px" }}>
+                Votre conseiller a été notifié
+              </h4>
+              <p style={{ fontSize: 13, color: config.colors.textLight, fontFamily: config.fonts.body, margin: "0 0 24px" }}>
+                Il reviendra vers vous très prochainement pour organiser un point patrimonial.
+              </p>
+              <button onClick={onClose} style={{
+                padding: "13px 32px", borderRadius: 12,
+                border: "none", background: config.colors.pageGradient,
+                color: "#fff", fontFamily: config.fonts.body, fontSize: 14, fontWeight: 600, cursor: "pointer",
+              }}>
+                Fermer
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
 
 // ── Ligne d'info éditable ──
 function EditRow({ label, value, onChange, type = "text", placeholder, readOnly = false }) {
@@ -63,8 +211,7 @@ function NotifToggle({ label, description, value, onChange }) {
           width: 44, height: 24, borderRadius: 12,
           background: value ? config.colors.perfGreen : "#E0E0E0",
           position: "relative", cursor: "pointer",
-          transition: "background 0.2s",
-          flexShrink: 0, marginLeft: 16,
+          transition: "background 0.2s", flexShrink: 0, marginLeft: 16,
         }}
       >
         <div style={{
@@ -107,25 +254,34 @@ export default function Profil({ onLogout }) {
   const navigate = useNavigate();
   const fileRef = useRef(null);
 
-  const [user, setUser] = useState(null);
-  const [telephone, setTelephone] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState(null);
-  const [notifs, setNotifs] = useState({});
-  const [saved, setSaved] = useState(false);
+  const [user, setUser]             = useState(null);
+  const [telephone, setTelephone]   = useState("");
+  const [email, setEmail]           = useState("");
+  const [adresse, setAdresse]       = useState("");
+  const [codePostal, setCodePostal] = useState("");
+  const [ville, setVille]           = useState("");
+  const [avatarUrl, setAvatarUrl]   = useState(null);
+  const [notifs, setNotifs]         = useState({});
+  const [saved, setSaved]           = useState(false);
   const [showPwdForm, setShowPwdForm] = useState(false);
-  const [pwd, setPwd] = useState({ current: "", new: "", confirm: "" });
+  const [showProjet, setShowProjet] = useState(false);
+  const [pwd, setPwd]               = useState({ current: "", new: "", confirm: "" });
 
   useEffect(() => {
     fetchUser().then(u => {
       setUser(u);
       setTelephone(u.telephone || "");
+      setEmail(u.email || "");
+      setAdresse(u.adresse || "");
+      setCodePostal(u.codePostal || "");
+      setVille(u.ville || "");
       setAvatarUrl(u.avatar || "/images/Profile%20utilisateur%20photo.png");
       setNotifs(u.preferences || {});
     });
   }, []);
 
   const handleSave = () => {
-    // API V2: supabase.from('users').update({ telephone, preferences: notifs }).eq('id', user.id)
+    // API V2: supabase.from('users').update({ telephone, email, adresse, codePostal, ville, preferences: notifs }).eq('id', user.id)
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -133,8 +289,7 @@ export default function Profil({ onLogout }) {
   const handleAvatar = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAvatarUrl(url);
+    setAvatarUrl(URL.createObjectURL(file));
     // API V2: supabase.storage.from('avatars').upload(userId, file)
   };
 
@@ -158,7 +313,6 @@ export default function Profil({ onLogout }) {
       {/* ── Avatar + nom ── */}
       <div style={{ textAlign: "center", marginBottom: 24 }}>
         <div style={{ position: "relative", display: "inline-block", marginBottom: 12 }}>
-          {/* Photo */}
           <div style={{
             width: 88, height: 88, borderRadius: "50%",
             overflow: "hidden", background: "#e8e8e8",
@@ -166,30 +320,17 @@ export default function Profil({ onLogout }) {
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt="Avatar"
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                onError={() => setAvatarUrl(null)}
-              />
+              <img src={avatarUrl} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={() => setAvatarUrl(null)} />
             ) : (
-              <span style={{ fontSize: 30, fontWeight: 700, color: "#888", fontFamily: config.fonts.body }}>
-                {initials}
-              </span>
+              <span style={{ fontSize: 30, fontWeight: 700, color: "#888", fontFamily: config.fonts.body }}>{initials}</span>
             )}
           </div>
-          {/* Bouton changer photo */}
-          <button
-            onClick={() => fileRef.current?.click()}
-            style={{
-              position: "absolute", bottom: 0, right: 0,
-              width: 28, height: 28, borderRadius: "50%",
-              background: config.colors.gradientStart,
-              border: "2px solid #fff",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
+          <button onClick={() => fileRef.current?.click()} style={{
+            position: "absolute", bottom: 0, right: 0,
+            width: 28, height: 28, borderRadius: "50%",
+            background: config.colors.gradientStart, border: "2px solid #fff",
+            display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+          }}>
             <Camera size={13} color="#fff" />
           </button>
           <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleAvatar} />
@@ -199,10 +340,8 @@ export default function Profil({ onLogout }) {
           {user.prenom} {user.nom}
         </h2>
         <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 13, fontFamily: config.fonts.body, margin: 0 }}>
-          {user.email}
+          {email}
         </p>
-
-        {/* Badge profil risque */}
         <div style={{
           display: "inline-flex", alignItems: "center", gap: 6,
           background: profilCouleur.bg, borderRadius: 20,
@@ -219,25 +358,23 @@ export default function Profil({ onLogout }) {
       <Section title="Informations personnelles">
         <EditRow label="Prénom" value={user.prenom} readOnly />
         <EditRow label="Nom" value={user.nom} readOnly />
-        <EditRow label="E-mail" value={user.email} readOnly />
-        <EditRow
-          label="Téléphone"
-          value={telephone}
-          onChange={setTelephone}
-          type="tel"
-          placeholder="+33 6 00 00 00 00"
-        />
+        <EditRow label="E-mail" value={email} onChange={setEmail} type="email" placeholder="votre@email.fr" />
+        <EditRow label="Téléphone" value={telephone} onChange={setTelephone} type="tel" placeholder="+33 6 00 00 00 00" />
+      </Section>
+
+      {/* ── Adresse ── */}
+      <Section title="Adresse postale">
+        <EditRow label="Rue" value={adresse} onChange={setAdresse} placeholder="2 rue de la Paix" />
+        <EditRow label="Code postal" value={codePostal} onChange={setCodePostal} placeholder="75001" />
+        <EditRow label="Ville" value={ville} onChange={setVille} placeholder="Paris" />
       </Section>
 
       {/* ── Sécurité ── */}
       <Section title="Sécurité">
-        <div
-          onClick={() => setShowPwdForm(v => !v)}
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            padding: "13px 0", cursor: "pointer",
-          }}
-        >
+        <div onClick={() => setShowPwdForm(v => !v)} style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "13px 0", cursor: "pointer",
+        }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Lock size={16} color={config.colors.gradientStart} />
             <span style={{ fontSize: 14, fontWeight: 500, color: config.colors.textDark, fontFamily: config.fonts.body }}>
@@ -253,29 +390,13 @@ export default function Profil({ onLogout }) {
               { key: "new", label: "Nouveau mot de passe" },
               { key: "confirm", label: "Confirmer le nouveau" },
             ].map(({ key, label }) => (
-              <input
-                key={key}
-                type="password"
-                placeholder={label}
-                value={pwd[key]}
+              <input key={key} type="password" placeholder={label} value={pwd[key]}
                 onChange={e => setPwd(p => ({ ...p, [key]: e.target.value }))}
-                style={{
-                  width: "100%", padding: "11px 14px",
-                  borderRadius: 8, border: "1px solid #E0E0E0",
-                  fontFamily: config.fonts.body, fontSize: 14,
-                  outline: "none", boxSizing: "border-box",
-                }}
+                style={{ width: "100%", padding: "11px 14px", borderRadius: 8, border: "1px solid #E0E0E0", fontFamily: config.fonts.body, fontSize: 14, outline: "none", boxSizing: "border-box" }}
               />
             ))}
-            <button
-              onClick={() => { setShowPwdForm(false); setPwd({ current: "", new: "", confirm: "" }); }}
-              style={{
-                padding: "11px", borderRadius: 8, border: "none",
-                background: config.colors.gradientStart, color: "#fff",
-                fontFamily: config.fonts.body, fontSize: 14, fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
+            <button onClick={() => { setShowPwdForm(false); setPwd({ current: "", new: "", confirm: "" }); }}
+              style={{ padding: "11px", borderRadius: 8, border: "none", background: config.colors.gradientStart, color: "#fff", fontFamily: config.fonts.body, fontSize: 14, fontWeight: 600, cursor: "pointer" }}>
               Confirmer
             </button>
           </div>
@@ -284,66 +405,57 @@ export default function Profil({ onLogout }) {
 
       {/* ── Notifications ── */}
       <Section title="Notifications">
-        <NotifToggle
-          label="Nouveaux documents"
-          description="Relevés, bilans, contrats"
-          value={notifs.notif_documents}
-          onChange={v => setNotifs(n => ({ ...n, notif_documents: v }))}
-        />
-        <NotifToggle
-          label="Rendez-vous"
-          description="Confirmations et rappels"
-          value={notifs.notif_rdv}
-          onChange={v => setNotifs(n => ({ ...n, notif_rdv: v }))}
-        />
-        <NotifToggle
-          label="Performance du portefeuille"
-          description="Alertes sur variations significatives"
-          value={notifs.notif_performance}
-          onChange={v => setNotifs(n => ({ ...n, notif_performance: v }))}
-        />
-        <NotifToggle
-          label="Actualités du cabinet"
-          description="Newsletter, événements, webinaires"
-          value={notifs.notif_actualites}
-          onChange={v => setNotifs(n => ({ ...n, notif_actualites: v }))}
-        />
+        <NotifToggle label="Nouveaux documents" description="Relevés, bilans, contrats"
+          value={notifs.notif_documents} onChange={v => setNotifs(n => ({ ...n, notif_documents: v }))} />
+        <NotifToggle label="Rendez-vous" description="Confirmations et rappels"
+          value={notifs.notif_rdv} onChange={v => setNotifs(n => ({ ...n, notif_rdv: v }))} />
+        <NotifToggle label="Performance du portefeuille" description="Alertes sur variations significatives"
+          value={notifs.notif_performance} onChange={v => setNotifs(n => ({ ...n, notif_performance: v }))} />
+        <NotifToggle label="Actualités du cabinet" description="Newsletter, événements, webinaires"
+          value={notifs.notif_actualites} onChange={v => setNotifs(n => ({ ...n, notif_actualites: v }))} />
       </Section>
 
-      {/* ── Bouton sauvegarder ── */}
-      <button
-        onClick={handleSave}
-        style={{
-          width: "100%", padding: "14px",
-          borderRadius: 12, border: "none",
-          background: saved ? config.colors.perfGreen : "#fff",
-          color: saved ? "#fff" : config.colors.gradientStart,
-          fontFamily: config.fonts.body, fontSize: 15, fontWeight: 600,
-          cursor: "pointer", marginBottom: 12,
-          transition: "all 0.25s",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-        }}
-      >
+      {/* ── Sauvegarder ── */}
+      <button onClick={handleSave} style={{
+        width: "100%", padding: "14px", borderRadius: 12, border: "none",
+        background: saved ? config.colors.perfGreen : "#fff",
+        color: saved ? "#fff" : config.colors.gradientStart,
+        fontFamily: config.fonts.body, fontSize: 15, fontWeight: 600,
+        cursor: "pointer", marginBottom: 12, transition: "all 0.25s",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+      }}>
         {saved ? <><Check size={18} /> Enregistré</> : "Sauvegarder"}
       </button>
 
+      {/* ── Signaler un changement ── */}
+      <button onClick={() => setShowProjet(true)} style={{
+        width: "100%", padding: "14px", borderRadius: 12,
+        border: "none",
+        background: config.colors.pageGradient,
+        color: "#fff",
+        fontFamily: config.fonts.body, fontSize: 14, fontWeight: 500,
+        cursor: "pointer", marginBottom: 12,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+      }}>
+        <Megaphone size={17} />
+        Signaler un changement / projet
+      </button>
+
       {/* ── Déconnexion ── */}
-      <button
-        onClick={handleLogout}
-        style={{
-          width: "100%", padding: "14px",
-          borderRadius: 12,
-          border: "1px solid rgba(255,255,255,0.25)",
-          background: "transparent",
-          color: "rgba(255,255,255,0.6)",
-          fontFamily: config.fonts.body, fontSize: 14,
-          cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-        }}
-      >
+      <button onClick={handleLogout} style={{
+        width: "100%", padding: "14px", borderRadius: 12,
+        border: "1px solid rgba(255,255,255,0.25)", background: "transparent",
+        color: "rgba(255,255,255,0.6)",
+        fontFamily: config.fonts.body, fontSize: 14,
+        cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+      }}>
         <LogOut size={16} />
         Se déconnecter
       </button>
+
+      {/* ── Modale projet ── */}
+      {showProjet && <ProjetModal onClose={() => setShowProjet(false)} />}
     </div>
   );
 }
