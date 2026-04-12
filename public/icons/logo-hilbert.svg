@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- Hilbert WM — Logo chain/infinity approximation -->
+  <!-- Top loop -->
+  <path d="M100 20 C130 20, 168 45, 168 85 C168 125, 130 145, 100 140 C70 145, 32 125, 32 85 C32 45, 70 20, 100 20Z"
+        stroke="#2690D2" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom loop -->
+  <path d="M100 140 C130 135, 168 155, 168 195 C168 235, 130 260, 100 260 C70 260, 32 235, 32 195 C32 155, 70 135, 100 140Z"
+        stroke="#2690D2" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center pin top -->
+  <rect x="89" y="95" width="22" height="40" rx="4" fill="#2690D2"/>
+  <!-- Center pin bottom -->
+  <rect x="89" y="145" width="22" height="40" rx="4" fill="#2690D2"/>
+</svg>

@@ -1,0 +1,146 @@
+/* ============================================================
+   HILBERT — Global CSS Reset
+   Tout le styling est en inline styles dans les composants
+   pour faciliter la marque blanche et le re-style Figma.
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Safe area iOS */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+#root {
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ── Bottom sheet mobile : padding pour passer au-dessus de la navbar ── */
+@media (max-width: 768px) {
+  .placement-sheet {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+  .versement-modal {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Smooth scrolling */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar discret sur desktop */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Reset boutons et liens */
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Sélection texte */
+::selection {
+  background: rgba(38, 144, 210, 0.3);
+}
+
+/* ── Animations premium ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Classe utilitaire : fade+montée, avec stagger via CSS custom prop */
+.anim-fade-up {
+  animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.anim-fade-in {
+  animation: fadeIn 0.4s ease both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.anim-scale-in {
+  animation: scaleIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Wrapper de page : fade doux au changement de route */
+.page-enter {
+  animation: fadeInUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger automatique sur les enfants directs d'un container .stagger */
+.stagger > *:nth-child(1)  { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s both; }
+.stagger > *:nth-child(2)  { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.12s both; }
+.stagger > *:nth-child(3)  { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.19s both; }
+.stagger > *:nth-child(4)  { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.26s both; }
+.stagger > *:nth-child(5)  { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.33s both; }
+.stagger > *:nth-child(n+6){ animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) 0.38s both; }
+
+/* Cartes blanches — micro hover lift sur desktop */
+@media (hover: hover) {
+  .card-hover {
+    transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.14) !important;
+  }
+}
