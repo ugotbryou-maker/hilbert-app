@@ -137,9 +137,13 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
 
       {/* ═══ MOBILE HEADER ═══ */}
       <div className="mobile-header" style={{
-        position: "fixed", top: 0, left: 0, right: 0, height: 60,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 16px", zIndex: 50,
+        position: "fixed", top: 0, left: 0, right: 0,
+        height: "calc(52px + env(safe-area-inset-top))",
+        display: "flex", alignItems: "flex-end", justifyContent: "space-between",
+        paddingLeft: 16, paddingRight: 16,
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: 8,
+        zIndex: 50,
       }}>
         <button onClick={() => setMenuOpen(true)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, display: "flex" }}>
           <Menu size={24} color="rgba(255,255,255,0.9)" />
@@ -230,32 +234,31 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
       <nav className="mobile-bottom-nav" style={{
         position: "fixed", bottom: 0, left: 0, right: 0,
         background: "#fff",
-        borderRadius: "10px 10px 0 0",
-        boxShadow: "0 -4px 24px rgba(0,0,0,0.10)",
-        /* PAS de display ici — géré par la media query CSS */
+        borderRadius: "12px 12px 0 0",
+        boxShadow: "0 -2px 16px rgba(0,0,0,0.08)",
         alignItems: "center", justifyContent: "space-around",
         zIndex: 50,
-        paddingTop: 8,
-        paddingBottom: "calc(8px + env(safe-area-inset-bottom))",
+        paddingTop: 6,
+        paddingBottom: "calc(4px + env(safe-area-inset-bottom))",
       }}>
         {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
           const isActive = location.pathname === path;
           return (
             <NavLink key={path} to={path} style={{
               display: "flex", flexDirection: "column", alignItems: "center",
-              gap: 4, textDecoration: "none", flex: 1, padding: "4px 0",
+              gap: 2, textDecoration: "none", flex: 1, padding: "2px 0",
             }}>
               <div style={{
-                width: 40, height: 40, borderRadius: 10,
+                width: 34, height: 34, borderRadius: 9,
                 background: isActive ? config.colors.pageGradient : "transparent",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "background 0.2s",
               }}>
-                <Icon size={20} color={isActive ? "#fff" : "#9ca3af"} />
+                <Icon size={18} color={isActive ? "#fff" : "#b0b8c1"} />
               </div>
               <span style={{
-                fontSize: 10, fontFamily: config.fonts.body,
-                color: isActive ? config.colors.gradientStart : "#9ca3af",
+                fontSize: 9, fontFamily: config.fonts.body,
+                color: isActive ? config.colors.gradientStart : "#b0b8c1",
                 fontWeight: isActive ? 600 : 400,
                 lineHeight: 1,
               }}>
@@ -285,8 +288,8 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
           .mobile-header { display: flex !important; }
           .mobile-bottom-nav { display: flex !important; }
           .main-content {
-            padding-top: 60px !important;
-            padding-bottom: 72px !important;
+            padding-top: calc(52px + env(safe-area-inset-top)) !important;
+            padding-bottom: calc(58px + env(safe-area-inset-bottom)) !important;
           }
         }
       `}</style>

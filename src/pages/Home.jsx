@@ -145,12 +145,12 @@ export default function Home() {
     new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
 
   return (
-    <div className="page-enter" style={{ padding: "20px 16px 32px", maxWidth: 480, margin: "0 auto" }}>
+    <div className="page-enter" style={{ padding: "12px 16px 24px", maxWidth: 480, margin: "0 auto" }}>
 
       {/* Date */}
       <p style={{
-        color: "rgba(255,255,255,0.7)", fontSize: 12,
-        margin: "0 0 4px", textAlign: "center",
+        color: "rgba(255,255,255,0.7)", fontSize: 11,
+        margin: "0 0 2px", textAlign: "center",
         fontFamily: config.fonts.body, fontWeight: 200,
       }}>
         {dateStr}
@@ -159,15 +159,15 @@ export default function Home() {
       {/* Bonjour — Poppins ExtraLight 200 */}
       <h1 style={{
         fontFamily: config.fonts.heading,
-        color: "#fff", fontSize: 30,
-        textAlign: "center", margin: "0 0 12px",
+        color: "#fff", fontSize: 28,
+        textAlign: "center", margin: "0 0 8px",
         fontWeight: 200,
       }}>
         Bonjour {user.prenom}
       </h1>
 
       {/* Profil risque */}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
         <RiskGauge niveau={user.profilRisque.niveau} label={user.profilRisque.label} />
       </div>
 
@@ -175,8 +175,8 @@ export default function Home() {
       <div style={{
         background: "#fff",
         borderRadius: 7,
-        padding: "14px 18px",
-        marginBottom: 14,
+        padding: "12px 16px",
+        marginBottom: 10,
         boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
       }}>
         <p style={{
@@ -208,7 +208,7 @@ export default function Home() {
       </div>
 
       {/* 2 CTA pills */}
-      <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
         <button
           onClick={() => navigate("/portefeuille")}
           style={{
@@ -241,7 +241,7 @@ export default function Home() {
 
       {/* Mes placements */}
       {sectionTitle("Mes placements :")}
-      <div className="stagger" style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 28 }}>
+      <div className="stagger" style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
         {portefeuille.placements.slice(0, 2).map((plc) => (
           <PlacementCard
             key={plc.id}
@@ -262,7 +262,7 @@ export default function Home() {
               borderRadius: 7, height: 68,
               padding: "0 12px",
               display: "flex", alignItems: "center", gap: 10,
-              cursor: "pointer", marginBottom: 28,
+              cursor: "pointer", marginBottom: 16,
               boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
             }}
           >
@@ -307,7 +307,7 @@ export default function Home() {
               borderRadius: 7, height: 68,
               padding: "0 12px",
               display: "flex", alignItems: "center", gap: 10,
-              cursor: "pointer", marginBottom: 28,
+              cursor: "pointer", marginBottom: 16,
               boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
               position: "relative",
             }}
