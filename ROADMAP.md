@@ -182,6 +182,31 @@ Le backoffice permet à chaque cabinet de tout gérer sans toucher au code.
 - Le client paramètre ses seuils de performance
 - Le conseiller peut pousser des alertes ciblées
 
+#### Quiz patrimonial & plan d'action personnalisé ⭐⭐⭐
+*Idée : 12/04/2026 — "la possibilité de faire des sortes de quiz qui permettent de définir un plan d'action avec le client pour lui proposer de nouveaux produits"*
+
+**Concept :**
+Un parcours guidé en 5–8 questions simples sur la situation et les objectifs du client, qui génère automatiquement une "fiche de recommandations" transmise au conseiller.
+
+**Exemples de thématiques :**
+- Préparer ma retraite
+- Réduire mes impôts
+- Placer un capital disponible
+- Protéger ma famille
+- Investir dans l'immobilier
+
+**Fonctionnement :**
+1. Le client choisit un thème et répond à des questions (budget, horizon, appétence au risque, objectif)
+2. Une synthèse est générée → ex. "Vous semblez éligible à : PER, SCPI, Assurance-vie"
+3. Le conseiller reçoit une notification avec les résultats + est invité à proposer un rendez-vous
+4. Disclaimer systématique : "Ces recommandations ne constituent pas un conseil en investissement. Votre conseiller reviendra vers vous."
+
+**Backoffice :**
+- Le cabinet configure les thématiques disponibles et les produits associés à chaque profil
+- Historique des quiz complétés visible dans la fiche client
+
+**Note technique :** Logique de scoring côté client (aucune donnée sensible), résultat envoyé via Edge Function Supabase. Compatible RGPD.
+
 ---
 
 ### V5 — App native (Capacitor)

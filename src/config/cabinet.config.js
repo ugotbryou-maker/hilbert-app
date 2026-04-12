@@ -74,6 +74,8 @@ const cabinetConfig = {
     ville: "Paris",
     siteWeb: "https://hilbert-wm.com",
     horaires: "Lun – Ven  9h – 18h",
+    // Lien Google Business avis — remplacer par l'URL réelle
+    googleAvisUrl: "https://g.page/r/VOTRE_ID_GOOGLE/review",
   },
 
   // --- Conseiller référent (données mock — remplacé par Supabase en V2) ---

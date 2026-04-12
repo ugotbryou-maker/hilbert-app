@@ -262,26 +262,27 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
         position: "fixed", bottom: 0, left: 0, right: 0,
         background: "#fff",
         borderRadius: "12px 12px 0 0",
-        boxShadow: "0 -2px 16px rgba(0,0,0,0.08)",
+        boxShadow: "0 -1px 12px rgba(0,0,0,0.07)",
         alignItems: "center", justifyContent: "space-around",
         zIndex: 50,
-        paddingTop: 6,
-        paddingBottom: "calc(4px + env(safe-area-inset-bottom))",
+        paddingTop: 8,
+        paddingBottom: "env(safe-area-inset-bottom)",
+        minHeight: "calc(50px + env(safe-area-inset-bottom))",
       }}>
         {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
           const isActive = location.pathname === path;
           return (
             <NavLink key={path} to={path} style={{
               display: "flex", flexDirection: "column", alignItems: "center",
-              gap: 2, textDecoration: "none", flex: 1, padding: "2px 0",
+              gap: 3, textDecoration: "none", flex: 1, paddingBottom: 6,
             }}>
               <div style={{
-                width: 34, height: 34, borderRadius: 9,
+                width: 32, height: 32, borderRadius: 9,
                 background: isActive ? config.colors.pageGradient : "transparent",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 transition: "background 0.2s",
               }}>
-                <Icon size={18} color={isActive ? "#fff" : "#b0b8c1"} />
+                <Icon size={17} color={isActive ? "#fff" : "#b0b8c1"} />
               </div>
               <span style={{
                 fontSize: 9, fontFamily: config.fonts.body,
@@ -316,7 +317,7 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
           .mobile-bottom-nav { display: flex !important; }
           .main-content {
             padding-top: calc(52px + env(safe-area-inset-top)) !important;
-            padding-bottom: calc(58px + env(safe-area-inset-bottom)) !important;
+            padding-bottom: calc(54px + env(safe-area-inset-bottom)) !important;
           }
         }
       `}</style>

@@ -282,8 +282,10 @@ export const mockRendezVous = [
     date: "2026-04-16",
     heure: "14:00",
     statut: "confirme",
-    lieu: "Présentiel — Cabinet Hilbert",
-    notes: "",
+    type_lieu: "présentiel",
+    adresse_lieu: "2 rue Turgot, 75009 Paris",
+    plateforme: null,
+    notes: "Merci d'apporter vos derniers avis d'imposition et justificatifs de revenus. Nous ferons le point complet sur votre portefeuille et aborderons les opportunités pour 2026.",
   },
   {
     id: "rdv_002",
@@ -291,8 +293,10 @@ export const mockRendezVous = [
     date: "2026-06-10",
     heure: "10:30",
     statut: "en_attente",
-    lieu: "Visioconférence",
-    notes: "",
+    type_lieu: "visio",
+    adresse_lieu: null,
+    plateforme: "Microsoft Teams",
+    notes: "Le lien de connexion vous sera envoyé par e-mail 30 minutes avant le rendez-vous.",
   },
 ];
 
