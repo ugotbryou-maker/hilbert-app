@@ -262,29 +262,32 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
         background: "#fff",
         boxShadow: "0 -1px 12px rgba(0,0,0,0.07)",
         zIndex: 50,
-        height: "calc(56px + env(safe-area-inset-bottom))",
-        alignItems: "center",
-        justifyContent: "space-around",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}>
-        {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
-          const isActive = location.pathname === path;
-          return (
-            <NavLink key={path} to={path} title={label} style={{
-              display: "flex", alignItems: "center", justifyContent: "center",
-              textDecoration: "none", flex: 1, height: "100%",
-            }}>
-              <div style={{
-                width: 38, height: 36, borderRadius: 10,
-                background: isActive ? config.colors.pageGradient : "transparent",
+        {/* Zone icônes : hauteur fixe 52px, indépendante du safe area */}
+        <div style={{
+          height: 52,
+          display: "flex", alignItems: "center", justifyContent: "space-around",
+        }}>
+          {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
+            const isActive = location.pathname === path;
+            return (
+              <NavLink key={path} to={path} title={label} style={{
                 display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "background 0.2s",
+                textDecoration: "none", flex: 1, height: "100%",
               }}>
-                <Icon size={19} color={isActive ? "#fff" : "#b0b8c1"} />
-              </div>
-            </NavLink>
-          );
-        })}
+                <div style={{
+                  width: 38, height: 36, borderRadius: 10,
+                  background: isActive ? config.colors.pageGradient : "transparent",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background 0.2s",
+                }}>
+                  <Icon size={19} color={isActive ? "#fff" : "#b0b8c1"} />
+                </div>
+              </NavLink>
+            );
+          })}
+        </div>
       </nav>
 
       {/* Panel notifications */}
