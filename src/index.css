@@ -40,10 +40,10 @@ body {
 /* ── Bottom sheet mobile : padding pour passer au-dessus de la navbar ── */
 @media (max-width: 768px) {
   .placement-sheet {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(66px + env(safe-area-inset-bottom)) !important;
   }
   .versement-modal {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(66px + env(safe-area-inset-bottom)) !important;
   }
 }
 
