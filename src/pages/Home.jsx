@@ -145,7 +145,7 @@ export default function Home() {
     new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n);
 
   return (
-    <div className="page-enter" style={{ padding: "12px 16px 24px", maxWidth: 480, margin: "0 auto" }}>
+    <div className="page-enter" style={{ padding: "12px 16px 0", maxWidth: 480, margin: "0 auto" }}>
 
       {/* Date */}
       <p style={{

@@ -1,13 +1,10 @@
 // ============================================================
-// useSupabase — Mock V1
-// En V2 : remplacer par le vrai client Supabase
-// import { createClient } from '@supabase/supabase-js'
+// useSupabase — Mix : Supabase réel (actualites) + Mock (reste)
 // ============================================================
 
 import { useState, useCallback } from "react";
 import * as mockData from "../mock/data.js";
-
-// API V2: const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+import { supabase } from "../lib/supabase.js";
 
 // Simule un délai réseau
 const delay = (ms = 300) => new Promise((res) => setTimeout(res, ms));
@@ -49,11 +46,35 @@ export function useSupabase() {
   }, []);
 
   const fetchActualites = useCallback(async () => {
-    // API V2: const { data } = await supabase.from('actualites').select('*').order('date', { ascending: false })
     setLoading(true);
-    await delay(300);
-    setLoading(false);
-    return mockData.mockActualites;
+    try {
+      const { data, error: sbError } = await supabase
+        .from("actualites")
+        .select("*")
+        .order("date", { ascending: false });
+
+      if (sbError) throw sbError;
+
+      // Mapper vers le format attendu par les composants
+      const mapped = (data ?? []).map((a) => ({
+        id:       a.id,
+        titre:    a.titre,
+        extrait:  a.extrait,
+        source:   a.source,
+        url:      a.url,
+        slug:     a.slug,
+        date:     a.date,
+        imageUrl: a.image_url ?? null,
+        type:     Array.isArray(a.categories) ? a.categories[0] : (a.categories ?? "Actualité"),
+      }));
+
+      return mapped;
+    } catch (e) {
+      console.warn("fetchActualites Supabase error, fallback mock:", e.message);
+      return mockData.mockActualites;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const fetchNotifications = useCallback(async () => {

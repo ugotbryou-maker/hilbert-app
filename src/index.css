@@ -23,6 +23,14 @@ body {
   padding-right: env(safe-area-inset-right);
 }
 
+/* PWA standalone : force le bon modèle de hauteur */
+@media all and (display-mode: standalone) {
+  html, body, #root {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+  }
+}
+
 #root {
   height: 100dvh;
   width: 100vw;

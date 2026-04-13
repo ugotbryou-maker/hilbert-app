@@ -170,7 +170,7 @@ export default function Documents() {
   };
 
   return (
-    <div className="page-enter" style={{ padding: "20px 16px 40px", maxWidth: 480, margin: "0 auto" }}>
+    <div className="page-enter" style={{ padding: "16px 16px 0", maxWidth: 480, margin: "0 auto" }}>
 
       {/* Titre — ExtraLight 25px */}
       <h1 style={{

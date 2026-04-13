@@ -393,7 +393,7 @@ export default function Portefeuille() {
     : data.placements.filter(p => p.categorie === categorie);
 
   return (
-    <div className="page-enter" style={{ padding: "20px 16px 40px", maxWidth: 560, margin: "0 auto" }}>
+    <div className="page-enter" style={{ padding: "16px 16px 0", maxWidth: 560, margin: "0 auto" }}>
 
       {/* Header valeur totale */}
       <div style={{ marginBottom: 20 }}>
