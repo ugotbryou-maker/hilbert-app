@@ -309,10 +309,9 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
         @media (max-width: 768px) {
           .desktop-sidebar { display: none !important; }
           .mobile-header { display: flex !important; }
-          .mobile-bottom-nav { display: flex !important; }
           .main-content {
             padding-top: calc(52px + env(safe-area-inset-top)) !important;
-            padding-bottom: calc(50px + env(safe-area-inset-bottom)) !important;
+            padding-bottom: 16px !important;
           }
         }
       `}</style>
