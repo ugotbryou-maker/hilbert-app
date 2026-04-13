@@ -15,6 +15,7 @@ html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: #03334A; /* couleur de fond app — évite la barre blanche iOS */
 }
 
 /* Safe area iOS — gérée par composant (header, bottom nav) */
