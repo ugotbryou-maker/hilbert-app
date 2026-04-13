@@ -48,6 +48,8 @@ export function useSupabase() {
   const fetchActualites = useCallback(async () => {
     setLoading(true);
     try {
+      if (!supabase) throw new Error("Supabase non configuré");
+
       const { data, error: sbError } = await supabase
         .from("actualites")
         .select("*")
