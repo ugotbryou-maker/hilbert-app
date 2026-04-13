@@ -260,36 +260,31 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
       <nav className="mobile-bottom-nav" style={{
         position: "fixed", bottom: 0, left: 0, right: 0,
         background: "#fff",
-        borderRadius: "14px 14px 0 0",
         boxShadow: "0 -1px 12px rgba(0,0,0,0.07)",
         zIndex: 50,
-        // Pas de height global — composé d'une ligne icônes fixe + safe area spacer
+        height: "calc(56px + env(safe-area-inset-bottom))",
+        alignItems: "center",
+        justifyContent: "space-around",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}>
-        {/* Ligne icônes — toujours 50px, indépendante de la safe area */}
-        <div style={{
-          height: 50,
-          display: "flex", alignItems: "center", justifyContent: "space-around",
-        }}>
-          {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
-            const isActive = location.pathname === path;
-            return (
-              <NavLink key={path} to={path} title={label} style={{
+        {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
+          const isActive = location.pathname === path;
+          return (
+            <NavLink key={path} to={path} title={label} style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              textDecoration: "none", flex: 1, height: "100%",
+            }}>
+              <div style={{
+                width: 38, height: 36, borderRadius: 10,
+                background: isActive ? config.colors.pageGradient : "transparent",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                textDecoration: "none", flex: 1, height: "100%",
+                transition: "background 0.2s",
               }}>
-                <div style={{
-                  width: 38, height: 36, borderRadius: 10,
-                  background: isActive ? config.colors.pageGradient : "transparent",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "background 0.2s",
-                }}>
-                  <Icon size={19} color={isActive ? "#fff" : "#b0b8c1"} />
-                </div>
-              </NavLink>
-            );
-          })}
-        </div>
+                <Icon size={19} color={isActive ? "#fff" : "#b0b8c1"} />
+              </div>
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Panel notifications */}
@@ -309,9 +304,10 @@ export default function Layout({ children, notifications, onMarkRead, user, onLo
         @media (max-width: 768px) {
           .desktop-sidebar { display: none !important; }
           .mobile-header { display: flex !important; }
+          .mobile-bottom-nav { display: flex !important; }
           .main-content {
             padding-top: calc(52px + env(safe-area-inset-top)) !important;
-            padding-bottom: 16px !important;
+            padding-bottom: calc(56px + env(safe-area-inset-bottom)) !important;
           }
         }
       `}</style>
