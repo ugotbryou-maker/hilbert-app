@@ -110,12 +110,15 @@ Deno.serve(async (req) => {
     const articles = await Promise.all(
       solutions.map(async (s) => {
         const slug = s.slug as string;
-        let imageUrl: string | null = null;
+        const section = s.section as string | null;
 
+        // URL correcte selon la section (particuliers ou entreprises)
+        const sectionPath = section === "professional" ? "entreprises" : "particuliers";
+        const articleUrl = `${BASE_URL}/nos-solutions/${sectionPath}/${slug}`;
+
+        let imageUrl: string | null = null;
         try {
-          const articleRes = await fetch(`${BASE_URL}/nos-articles/${slug}`, {
-            headers: FETCH_HEADERS,
-          });
+          const articleRes = await fetch(articleUrl, { headers: FETCH_HEADERS });
           if (articleRes.ok) {
             const articleHtml = await articleRes.text();
             imageUrl = extractOgImage(articleHtml);
@@ -124,7 +127,7 @@ Deno.serve(async (req) => {
           // Image non critique — on continue sans
         }
 
-        const cat = categoryLabel(s.category as string | null, s.section as string | null);
+        const cat = categoryLabel(s.category as string | null, section);
         return {
           id:          s._id as string,
           titre:       ((s.title as string) ?? "").trim(),
@@ -132,7 +135,7 @@ Deno.serve(async (req) => {
           extrait:     (s.metaDescription as string | null) ?? extractIntro(s.body as unknown[]),
           categories:  [cat],
           source:      "Hilbert WM",
-          url:         `${BASE_URL}/nos-articles/${slug}`,
+          url:         articleUrl,
           date:        s._createdAt as string,
           image_url:   imageUrl,
         };
